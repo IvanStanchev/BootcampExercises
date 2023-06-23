@@ -1,7 +1,6 @@
 package com.example.springsecuritytutorial.user;
 
 import jakarta.persistence.*;
-import jdk.jfr.DataAmount;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,6 +21,7 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column
     private String firstname;
     private String lastname;
     private String email;
