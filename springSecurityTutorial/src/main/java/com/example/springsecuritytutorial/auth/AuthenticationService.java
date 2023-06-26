@@ -38,11 +38,8 @@ public class AuthenticationService {
                 .role(Role.USER)
                 .build();
         userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        return AuthenticationResponse.builder()
-                .token(jwtToken)
-                .build();
 
+        return generateJwt(user);
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -54,10 +51,14 @@ public class AuthenticationService {
         );
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
+
+        return generateJwt(user);
+    }
+
+    public AuthenticationResponse generateJwt(User user){
+        String jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
-        //export the above code in function (it is duplicated)
     }
 }
