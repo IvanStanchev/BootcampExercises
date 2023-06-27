@@ -23,6 +23,10 @@ public class AuthenticationController {
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
+    @PostMapping("/login1")
+    public ResponseEntity<String> login1(@RequestBody AuthenticationRequest request) {
+        return ResponseEntity.ok(request.getEmail() + " " + request.getPassword());
+    }
 
     @GetMapping("/register")
     public ResponseEntity<String> showRegistrationPage() {

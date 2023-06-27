@@ -43,14 +43,18 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationProvider.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
+
+        if(!user.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid password");
+        }
+
+        new UsernamePasswordAuthenticationToken(
+                user.getEmail(),
+                user.getPassword(),
+                user.getAuthorities()
+        );
 
         return generateJwt(user);
     }
