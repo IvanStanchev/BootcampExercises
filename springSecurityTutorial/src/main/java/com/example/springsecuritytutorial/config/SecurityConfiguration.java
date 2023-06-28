@@ -20,9 +20,9 @@ public class SecurityConfiguration {
         http
                 .cors(cors -> cors.disable())
                 .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
+                .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/login1", "/register").permitAll()
-                        .anyRequest().hasAuthority("USER")
+                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider);

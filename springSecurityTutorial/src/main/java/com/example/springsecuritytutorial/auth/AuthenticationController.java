@@ -14,8 +14,6 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.add("Authorization", "Bearer " + jwtToken);
         return ResponseEntity.ok(authenticationService.register(request));
     }
 

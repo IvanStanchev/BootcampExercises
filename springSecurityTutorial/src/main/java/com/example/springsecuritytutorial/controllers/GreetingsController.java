@@ -12,15 +12,8 @@ import org.springframework.http.ResponseEntity;
 public class GreetingsController {
     @GetMapping("/hello")
     public ResponseEntity<String> sayHello(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwtToken = authorizationHeader.substring(7);
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body("Hello from our API");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Invalid or missing authorization header");
-        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Hello from our API");
     }
 
 
