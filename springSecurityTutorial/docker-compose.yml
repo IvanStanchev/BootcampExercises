@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  mysql-db:
+    build: ../Docker/DATABASE
+    image: arm64v8/mysql:latest
+    volumes:
+      - ./DATABASE/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: jwt_security
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3305:3306"
+    networks:
+      - app-network
+
+  spring-app:
+    build: ../Docker/SPRING
+    image: spring-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/jwt_security
+      SPRING_DATASOURCE_USERNAME: user
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_DRIVER-CLASS-NAME: com.mysql.cj.jdbc.Driver
+      SPRING_JPA_DATABASE-PLATFORM: org.hibernate.dialect.MySQLDialect
+      SPRING_JPA_HIBERNATE_DDL-AUTO: update
+      SPRING_PROFILES_ACTIVE: prod
+    ports:
+      - "8000:8080"
+    depends_on:
+      - mysql-db
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

@@ -1,34 +1,101 @@
 package com.example.springsecuritytutorial.user;
 
-import jakarta.persistence.*;
-import lombok.*;
+import com.example.springsecuritytutorial.note.Note;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "user")
 public class User implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-
-    @Column
     private String firstname;
     private String lastname;
     private String email;
     private String password;
-
-    @Enumerated(EnumType.STRING)
     private Role role;
+    private List<Note> notes;
+
+    public User(Integer id, String firstname, String lastname, String email, String password, Role role) {
+        this.id = id;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.notes = new ArrayList<>();
+    }
+
+    public User() {
+
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void addNote(Note note) {
+        notes.add(note);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
@@ -37,11 +104,6 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    @Override
-    public String getPassword() {
-        return password;
     }
 
     @Override
@@ -62,5 +124,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static User fromResultSet(ResultSet rs) throws SQLException {
+        Integer id = rs.getInt("id");
+        String firstname = rs.getString("firstname");
+        String lastname = rs.getString("lastname");
+        String email = rs.getString("email");
+        String password = rs.getString("password");
+        Role role = Role.valueOf(rs.getString("role"));
+
+        return new User(id, firstname, lastname, email, password, role);
     }
 }

@@ -30,13 +30,13 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse register(RegisterRequest request) {
-        User user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
-                .password(request.getPassword())
-                .role(Role.USER)
-                .build();
+        User user = new User();
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(Role.USER);
+
         userRepository.save(user);
 
         return generateJwt(user);
