@@ -21,31 +21,34 @@ public class UserService {
 
     public Optional<String> getFirstName(int id) {
         Optional<User> optionalUser = this.userRepository.findById(id);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
         User user = optionalUser.get();
         return Optional.of(user.getFirstname());
     }
+
     public Optional<String> getFirstName(String email) {
         Optional<User> optionalUser = this.userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
         User user = optionalUser.get();
         return Optional.of(user.getFirstname());
     }
+
     public Optional<String> getLastName(int id) {
         Optional<User> optionalUser = this.userRepository.findById(id);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
         User user = optionalUser.get();
         return Optional.of(user.getLastname());
     }
+
     public Optional<String> getLastName(String email) {
         Optional<User> optionalUser = this.userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
         User user = optionalUser.get();
@@ -54,23 +57,34 @@ public class UserService {
 
     public Optional<String> getFullName(int id) {
         Optional<User> optionalUser = this.userRepository.findById(id);
-        if(optionalUser.isEmpty()){
-            return Optional.empty();
-        }
-        User user = optionalUser.get();
-        return Optional.of(user.getFirstname() + " " + user.getLastname());
-    }
-    public Optional<String> getFullName(String email) {
-        Optional<User> optionalUser = this.userRepository.findByEmail(email);
-        if(optionalUser.isEmpty()){
+        if (optionalUser.isEmpty()) {
             return Optional.empty();
         }
         User user = optionalUser.get();
         return Optional.of(user.getFirstname() + " " + user.getLastname());
     }
 
-    public String sayHello(String authorizationHeader) {
+    public Optional<String> getFullName(String email) {
+        Optional<User> optionalUser = this.userRepository.findByEmail(email);
+        if (optionalUser.isEmpty()) {
+            return Optional.empty();
+        }
+        User user = optionalUser.get();
+        return Optional.of(user.getFirstname() + " " + user.getLastname());
+    }
+
+    public String getEmailFromToken(String authorizationHeader) {
         String email = jwtService.extractUsername(authorizationHeader.substring(7));
+        return email;
+    }
+    public int getIdFromToken(String authorizationHeader) {
+        String email = jwtService.extractUsername(authorizationHeader.substring(7));
+        User user = userRepository.findByEmail(email).get();
+        return user.getId();
+    }
+
+    public String sayHello(String authorizationHeader) {
+        String email = getEmailFromToken(authorizationHeader);
         User user = userRepository.findByEmail(email).get();
         return ("Hello from our API, " + user.getFirstname() + " " + user.getLastname() + "!");
     }
