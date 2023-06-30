@@ -1,6 +1,11 @@
 package com.example.springsecuritytutorial.controllers;
 
+import com.example.springsecuritytutorial.config.JwtService;
+import com.example.springsecuritytutorial.user.User;
+import com.example.springsecuritytutorial.user.UserRepository;
+import com.example.springsecuritytutorial.user.UserService;
 import jakarta.annotation.security.RolesAllowed;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -11,12 +16,18 @@ import org.springframework.http.ResponseEntity;
 
 @RestController
 public class GreetingsController {
+    private final UserService userService;
+
+    @Autowired
+    public GreetingsController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/hello")
     public ResponseEntity<String> sayHello(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         return ResponseEntity.status(HttpStatus.OK)
-                .body("Hello from our API");
+                .body(userService.sayHello(authorizationHeader));
     }
-
 
     @GetMapping("/bye")
     public ResponseEntity<String> sayGoodBye(){
@@ -29,6 +40,5 @@ public class GreetingsController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body("What is it you truly desire");
     }
-    //video ~ 1:55:00
 }
 
