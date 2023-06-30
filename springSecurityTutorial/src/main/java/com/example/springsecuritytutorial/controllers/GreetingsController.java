@@ -1,10 +1,6 @@
 package com.example.springsecuritytutorial.controllers;
 
-import com.example.springsecuritytutorial.config.JwtService;
-import com.example.springsecuritytutorial.user.User;
-import com.example.springsecuritytutorial.user.UserRepository;
 import com.example.springsecuritytutorial.user.UserService;
-import jakarta.annotation.security.RolesAllowed;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.GetMapping;
