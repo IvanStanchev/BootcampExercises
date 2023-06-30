@@ -1,14 +1,20 @@
 package com.example.springsecuritytutorial.note;
 
-import com.example.springsecuritytutorial.user.User;
-import org.springframework.data.domain.Example;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.FluentQuery;
+import org.springframework.stereotype.Repository;
 
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
-public interface NoteRepository extends JpaRepository<Note,Long> {
-    Optional<Note> findByCreator(User creator);
+@Repository
+public interface NoteRepository {
+    public void save(Note note);
 
+    public Optional<Note> getById(Long id);
+
+    public List<Note> getByUserId(int userId);
+
+    public void update(Note note);
+
+    public void delete(Long id);
 }
