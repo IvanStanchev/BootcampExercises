@@ -60,7 +60,7 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse generateJwt(User user){
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken(user.getId(), user.getEmail());
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
