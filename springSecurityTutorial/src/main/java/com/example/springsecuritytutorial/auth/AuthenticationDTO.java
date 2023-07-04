@@ -1,12 +1,13 @@
 package com.example.springsecuritytutorial.auth;
 
 
+import java.util.List;
 import java.util.Objects;
 
-public class AuthenticationRequest {
+public class AuthenticationDTO {
     private String email;
     private String password;
-
+    private List<String> authorities;
     public String getEmail() {
         return email;
     }
@@ -23,11 +24,19 @@ public class AuthenticationRequest {
         this.password = password;
     }
 
+    public List<String> getAuthorities() {
+        return authorities;
+    }
+
+    public void setAuthorities(List<String> authorities) {
+        this.authorities = authorities;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        AuthenticationRequest that = (AuthenticationRequest) o;
+        AuthenticationDTO that = (AuthenticationDTO) o;
         return Objects.equals(email, that.email) && Objects.equals(password, that.password);
     }
 

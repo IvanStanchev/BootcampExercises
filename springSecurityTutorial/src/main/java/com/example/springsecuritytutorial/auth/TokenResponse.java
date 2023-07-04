@@ -7,10 +7,10 @@ import java.util.Objects;
 
 @Data
 @Builder
-public class AuthenticationResponse {
+public class TokenResponse {
     private String token;
 
-    public AuthenticationResponse(String token) {
+    public TokenResponse(String token) {
         this.token = token;
     }
 
@@ -28,7 +28,7 @@ public class AuthenticationResponse {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        AuthenticationResponse that = (AuthenticationResponse) o;
+        TokenResponse that = (TokenResponse) o;
         return Objects.equals(token, that.token);
     }
 
