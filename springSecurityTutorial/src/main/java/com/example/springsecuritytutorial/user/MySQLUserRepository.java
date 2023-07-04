@@ -12,10 +12,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @Repository
-public class UserDAO {
+public class MySQLUserRepository implements UserRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    public UserDAO(DataSource dataSource) {
+    public MySQLUserRepository(DataSource dataSource) {
         this.jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
