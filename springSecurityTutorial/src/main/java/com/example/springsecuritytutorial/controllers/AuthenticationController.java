@@ -1,7 +1,7 @@
 package com.example.springsecuritytutorial.controllers;
 
-import com.example.springsecuritytutorial.auth.AuthenticationRequest;
-import com.example.springsecuritytutorial.auth.AuthenticationResponse;
+import com.example.springsecuritytutorial.auth.AuthenticationDTO;
+import com.example.springsecuritytutorial.auth.TokenResponse;
 import com.example.springsecuritytutorial.auth.AuthenticationService;
 import com.example.springsecuritytutorial.auth.RegisterRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,16 +16,16 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest request) {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<TokenResponse> login(@RequestBody AuthenticationDTO request) {
         return ResponseEntity.ok(authenticationService.authenticate(request));
     }
     @PostMapping("/login1")
-    public ResponseEntity<String> login1(@RequestBody AuthenticationRequest request) {
+    public ResponseEntity<String> login1(@RequestBody AuthenticationDTO request) {
         return ResponseEntity.ok(request.getEmail() + " " + request.getPassword());
     }
 

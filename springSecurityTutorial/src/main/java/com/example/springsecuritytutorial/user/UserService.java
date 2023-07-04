@@ -1,11 +1,7 @@
 package com.example.springsecuritytutorial.user;
 
 import com.example.springsecuritytutorial.config.JwtService;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Optional;
 
@@ -18,6 +14,28 @@ public class UserService {
         this.userRepository = userRepository;
         this.jwtService = jwtService;
     }
+
+    public Optional<User> getById(int id) {
+        return userRepository.findById(id);
+    }
+    public Optional<User> getByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+    public AddUserResponse addUser(AddUserRequest request) {
+        String email = request.getEmail();
+
+        User user = new User();
+        user.setFirstname(request.getFirstname());
+        user.setLastname(request.getLastname());
+        user.setEmail(email);
+        user.setPassword(request.getPassword());
+        user.setRole(Role.USER);
+
+        int id = userRepository.findByEmail(email).get().getId();
+
+        return new AddUserResponse(id, email);
+    }
+
 
     public Optional<String> getFirstName(int id) {
         Optional<User> optionalUser = this.userRepository.findById(id);

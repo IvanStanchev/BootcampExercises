@@ -1,67 +1,73 @@
 package com.example.springsecuritytutorial.auth;
 
 import com.example.springsecuritytutorial.config.JwtService;
-import com.example.springsecuritytutorial.user.Role;
-import com.example.springsecuritytutorial.user.User;
-import com.example.springsecuritytutorial.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static jdk.internal.org.jline.reader.impl.LineReaderImpl.CompletionType.List;
 
 @Service
 public class AuthenticationService {
 
-    private final UserRepository userRepository;
+//    private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationProvider authenticationProvider;
+    private final RestTemplate restTemplate;
 
     @Autowired
-    public AuthenticationService(UserRepository userRepository,
-                                 PasswordEncoder passwordEncoder,
+    public AuthenticationService(PasswordEncoder passwordEncoder,
                                  JwtService jwtService,
                                  AuthenticationProvider authenticationProvider) {
-        this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.authenticationProvider = authenticationProvider;
+        this.restTemplate = new RestTemplate();
+    }
+    private String baseUrl = "http://localhost:8080/users/";
+
+    public TokenResponse register(RegisterRequest request) {
+        ResponseEntity<RegisterResponse> responseEntity = restTemplate.postForEntity(baseUrl, request, RegisterResponse.class);
+        RegisterResponse response = responseEntity.getBody();
+
+        int id = response.getId();
+        String email = response.getEmail();
+        return generateJwt(id, email);
     }
 
-    public AuthenticationResponse register(RegisterRequest request) {
-        User user = new User();
-        user.setFirstname(request.getFirstname());
-        user.setLastname(request.getLastname());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
-        user.setRole(Role.USER);
+    public AuthenticationDTO authenticate(AuthenticationDTO request) {
+        String url = baseUrl + request.getEmail();
+        ResponseEntity<AuthenticationDTO> responseEntity = restTemplate.getForEntity(url, AuthenticationDTO.class);
+        AuthenticationDTO response = responseEntity.getBody();
 
-        userRepository.save(user);
-
-        return generateJwt(user);
-    }
-
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow();
-
-        if(!user.getPassword().equals(request.getPassword())) {
+        if(!response.getPassword().equals(request.getPassword())) {
             throw new RuntimeException("Invalid password");
         }
+        List<? extends GrantedAuthority> grantedAuthorities = new ArrayList<>(stringlist);
+        Collection<? extends GrantedAuthority> collection = grantedAuthorities;
+
 
         new UsernamePasswordAuthenticationToken(
-                user.getEmail(),
-                user.getPassword(),
-                user.getAuthorities()
+                response.getEmail(),
+                response.getPassword(),
+                grantedAuthorities
         );
 
         return generateJwt(user);
     }
 
-    public AuthenticationResponse generateJwt(User user){
-        String jwtToken = jwtService.generateToken(user.getId(), user.getEmail());
-        return AuthenticationResponse.builder()
+    public TokenResponse generateJwt(int id, String email){
+        String jwtToken = jwtService.generateToken(id, email);
+        return TokenResponse.builder()
                 .token(jwtToken)
                 .build();
     }
